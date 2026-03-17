@@ -1,6 +1,6 @@
 # codex-installer
 
-Public macOS/Linux bootstrap scripts for installing the Codex CLI from the official `openai/codex` GitHub releases and signing in with ChatGPT device code by default.
+Bootstrap installer for installing the Codex CLI on macOS/Linux from the official `openai/codex` GitHub releases and signing in with ChatGPT device code by default.
 
 ## What this repository does
 
