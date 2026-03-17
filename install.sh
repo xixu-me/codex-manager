@@ -82,9 +82,9 @@ Environment variables:
   CODEX_INSTALLER_REPO_REF    Override the bootstrap helper git ref.
 
 Examples:
-  curl -fsSL https://raw.githubusercontent.com/xixu-me/codex-installer/main/install.sh | bash
-  curl -fsSL https://raw.githubusercontent.com/xixu-me/codex-installer/main/install.sh | bash -s -- --version 0.115.0
-  curl -fsSL https://raw.githubusercontent.com/xixu-me/codex-installer/main/install.sh | CODEX_INSTALL_DIR="$HOME/bin" bash -s -- --skip-login
+  curl -fsSL https://github.com/xixu-me/codex-installer/raw/refs/heads/main/install.sh | bash
+  curl -fsSL https://github.com/xixu-me/codex-installer/raw/refs/heads/main/install.sh | bash -s -- --version 0.115.0
+  curl -fsSL https://github.com/xixu-me/codex-installer/raw/refs/heads/main/install.sh | CODEX_INSTALL_DIR="$HOME/bin" bash -s -- --skip-login
 EOF
 }
 

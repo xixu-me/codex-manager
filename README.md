@@ -37,7 +37,7 @@ Each upstream archive contains a single platform-named executable, so the instal
 Remote bootstrap:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xixu-me/codex-installer/main/install.sh | bash
+curl -fsSL https://github.com/xixu-me/codex-installer/raw/refs/heads/main/install.sh | bash
 ```
 
 This repository is designed around the remote-script entrypoint above. `install.sh` bootstraps itself by downloading the shared helper library from `xixu-me/codex-installer` before it talks to the official `openai/codex` release API.
