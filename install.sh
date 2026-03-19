@@ -173,7 +173,7 @@ main() {
     archive_path="${tmp_dir}/${asset_name}"
     
     cleanup() {
-        rm -rf "$tmp_dir"
+        rm -rf "${tmp_dir:-}"
         if [ -n "${BOOTSTRAP_TMP_LIB:-}" ]; then
             rm -f "$BOOTSTRAP_TMP_LIB"
         fi
