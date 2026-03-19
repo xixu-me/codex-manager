@@ -316,14 +316,17 @@ normalize_sha256() {
 
 sha256_file() {
     local target="$1"
+    local digest_line
     
     if command_exists shasum; then
-        shasum -a 256 "$target" | awk '{print $1}'
+        digest_line="$(shasum -a 256 "$target")" || return 1
+        printf '%s\n' "${digest_line%% *}"
         return 0
     fi
     
     if command_exists sha256sum; then
-        sha256sum "$target" | awk '{print $1}'
+        digest_line="$(sha256sum "$target")" || return 1
+        printf '%s\n' "${digest_line%% *}"
         return 0
     fi
     

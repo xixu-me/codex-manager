@@ -20,6 +20,8 @@ assert_eq() {
 }
 
 main() {
+    local tmp_file
+    
     assert_eq "$(normalize_arch arm64)" "aarch64" "arm64 normalizes to aarch64"
     assert_eq "$(normalize_arch amd64)" "x86_64" "amd64 normalizes to x86_64"
     assert_eq "$(normalize_release_ref latest)" "latest" "latest release remains latest"
@@ -47,6 +49,14 @@ main() {
     "$(normalize_sha256 'sha256:abcdef')" \
     "abcdef" \
     "sha256 prefix is stripped"
+    
+    tmp_file="$(mktemp)"
+    trap 'rm -f -- '"'"${tmp_file}"'"'' EXIT
+    printf 'abc' >"$tmp_file"
+    assert_eq \
+    "$(sha256_file "$tmp_file")" \
+    "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" \
+    "sha256_file extracts the digest without awk"
     
     printf 'Smoke tests passed.\n'
 }
