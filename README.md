@@ -1,6 +1,6 @@
 # codex-installer
 
-中文说明请见 [README.zh.md](README.zh.md).
+***[汉语](README.zh.md)***
 
 Bootstrap installer for installing the Codex CLI on macOS/Linux from the official `openai/codex` GitHub releases and signing in with ChatGPT device code by default.
 
@@ -46,7 +46,7 @@ This repository is designed around the remote-script entrypoint above. `install.
 
 ## Default install behavior
 
-`./install.sh` will:
+`install.sh` will:
 
 1. install missing bootstrap dependencies when possible
 2. query the official `openai/codex` release metadata
@@ -60,7 +60,7 @@ The login step runs as the invoking user, even if the binary install needed `sud
 ## Options
 
 ```text
-./install.sh [options]
+install.sh [options]
 
   --install-dir DIR   Install the binary into DIR.
   --version VERSION   Install a specific release.
@@ -90,9 +90,9 @@ The login step runs as the invoking user, even if the binary install needed `sud
 
 ## Additional scripts
 
-- `./scripts/login-device.sh`: rerun device-code login without reinstalling
-- `./scripts/uninstall.sh`: remove the installed binary
-- `./scripts/uninstall.sh --purge-config`: also remove `${CODEX_HOME:-$HOME/.codex}`
+- `scripts/login-device.sh`: rerun device-code login without reinstalling
+- `scripts/uninstall.sh`: remove the installed binary
+- `scripts/uninstall.sh --purge-config`: also remove `${CODEX_HOME:-$HOME/.codex}`
 
 ## Dependency strategy
 

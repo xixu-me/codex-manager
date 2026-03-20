@@ -1,6 +1,6 @@
 # codex-installer
 
-For English documentation, see [README.md](README.md).
+***[English](README.md)***
 
 用于在 macOS/Linux 上安装 Codex CLI 的引导安装器。它从官方 `openai/codex` GitHub Releases 下载程序，并默认通过 ChatGPT 设备码方式登录。
 
@@ -46,7 +46,7 @@ curl -fsSL https://github.com/xixu-me/codex-installer/raw/refs/heads/main/instal
 
 ## 默认安装行为
 
-`./install.sh` 会：
+`install.sh` 会：
 
 1. 在可行时安装缺失的引导依赖
 2. 查询官方 `openai/codex` release 元数据
@@ -60,7 +60,7 @@ curl -fsSL https://github.com/xixu-me/codex-installer/raw/refs/heads/main/instal
 ## 选项
 
 ```text
-./install.sh [options]
+install.sh [options]
 
   --install-dir DIR   将二进制安装到 DIR。
   --version VERSION   安装指定版本。
@@ -90,9 +90,9 @@ curl -fsSL https://github.com/xixu-me/codex-installer/raw/refs/heads/main/instal
 
 ## 附加脚本
 
-- `./scripts/login-device.sh`：无需重新安装，重新执行设备码登录
-- `./scripts/uninstall.sh`：移除已安装的二进制文件
-- `./scripts/uninstall.sh --purge-config`：同时删除 `${CODEX_HOME:-$HOME/.codex}`
+- `scripts/login-device.sh`：无需重新安装，重新执行设备码登录
+- `scripts/uninstall.sh`：移除已安装的二进制文件
+- `scripts/uninstall.sh --purge-config`：同时删除 `${CODEX_HOME:-$HOME/.codex}`
 
 ## 依赖策略
 
