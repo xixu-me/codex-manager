@@ -202,10 +202,14 @@ install_release_binary() (
     download_file "$asset_url" "$archive_path"
     verify_archive_checksum "$archive_path" "$asset_digest"
 
-    extracted_binary="$(extract_archive_binary "$archive_path" "$tmp_dir")"
-    [ -x "$extracted_binary" ] || chmod +x "$extracted_binary"
+    if ! extracted_binary="$(extract_archive_binary "$archive_path" "$tmp_dir")"; then
+        return 1
+    fi
+    [ -x "$extracted_binary" ] || chmod +x "$extracted_binary" || return 1
 
-    installed_codex="$(install_binary_to_dir "$extracted_binary" "$install_dir")"
+    if ! installed_codex="$(install_binary_to_dir "$extracted_binary" "$install_dir")"; then
+        return 1
+    fi
     printf '%s\n' "$installed_codex"
 )
 

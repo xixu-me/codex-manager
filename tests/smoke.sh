@@ -59,6 +59,7 @@ main() {
     local existing_install_dir preserved_file other_exec_file path_candidate_dir
     local wrong_install_dir explicit_result
     local install_target_dir result_path command_output dangerous_cli_bin remove_log update_log extract_error_output preferred_temp_dir
+    local manage_source_dir manage_failure_log install_call_marker
     local ci_workflow dependabot_config automerge_workflow
     
     assert_eq "$(normalize_arch arm64)" "aarch64" "arm64 normalizes to aarch64"
@@ -200,6 +201,49 @@ EOF
     "${install_dir}/codex" \
     "existing-binary" \
     "failed install keeps the previous codex binary intact"
+
+    manage_source_dir="${temp_root}/manage-source"
+    mkdir -p "${manage_source_dir}/lib"
+    sed '$d' "${SCRIPT_DIR}/../manage.sh" >"${manage_source_dir}/manage.sh"
+    cp "${SCRIPT_DIR}/../lib/common.sh" "${manage_source_dir}/lib/common.sh"
+
+    manage_failure_log="${temp_root}/install-release.log"
+    install_call_marker="${temp_root}/install-called"
+    if (
+        # shellcheck disable=SC1090
+        . "${manage_source_dir}/manage.sh"
+
+        detect_platform() { printf 'linux\n'; }
+        detect_arch() { printf 'x86_64\n'; }
+        codex_release_asset_for() { printf 'codex-x86_64-unknown-linux-musl.tar.gz\n'; }
+        fetch_release_metadata_to_file() { : >"$2"; }
+        release_tag_from_metadata() { printf 'rust-v0.test\n'; }
+        release_asset_download_url() { printf 'https://example.invalid/codex.tar.gz\n'; }
+        release_asset_digest() { return 0; }
+        download_file() { printf 'fake archive' >"$2"; }
+        verify_archive_checksum() { :; }
+        extract_archive_binary() {
+            printf 'simulated extract failure\n' >&2
+            return 1
+        }
+        install_binary_to_dir() {
+            printf 'called\n' >"$install_call_marker"
+            return 0
+        }
+
+        install_release_binary latest "${temp_root}/ignored-install"
+    ) >"$manage_failure_log" 2>&1; then
+        printf 'Assertion failed: install_release_binary should fail when archive extraction fails\n' >&2
+        exit 1
+    fi
+    if [ -e "$install_call_marker" ]; then
+        printf 'Assertion failed: install_release_binary should not continue into install_binary_to_dir after extraction fails\n' >&2
+        exit 1
+    fi
+    assert_contains \
+    "$(cat "$manage_failure_log")" \
+    "simulated extract failure" \
+    "install_release_binary surfaces extraction failures instead of continuing with an empty path"
 
     fake_path_bin="${temp_root}/fake-path-bin"
     mkdir -p "$fake_path_bin"
