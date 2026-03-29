@@ -268,7 +268,9 @@ run_install_command() {
 
     install_dir="$(default_install_dir)"
     ensure_dependencies "$skip_deps"
-    installed_codex="$(install_release_binary "$requested_version" "$install_dir")"
+    if ! installed_codex="$(install_release_binary "$requested_version" "$install_dir")"; then
+        die "Failed to install Codex to ${install_dir}."
+    fi
 
     log_info "Installed Codex to ${installed_codex}."
     "$installed_codex" --version
@@ -320,7 +322,9 @@ run_update_command() {
     CODEX_INSTALL_DIR="$install_dir"
 
     ensure_dependencies "$skip_deps"
-    installed_codex="$(install_release_binary "$requested_version" "$install_dir")"
+    if ! installed_codex="$(install_release_binary "$requested_version" "$install_dir")"; then
+        die "Failed to update Codex in ${install_dir}."
+    fi
 
     log_info "Updated Codex in ${installed_codex}."
     "$installed_codex" --version
