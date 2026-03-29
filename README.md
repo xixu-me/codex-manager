@@ -124,4 +124,4 @@ GitHub Actions validates the repository on both Ubuntu and macOS by running:
 
 ## License
 
-This repository is licensed under the MIT License. See [LICENSE](LICENSE).
+This repository is licensed under the MIT License. See [`LICENSE`](LICENSE).
