@@ -58,7 +58,7 @@ main() {
     local existing_install_dir preserved_file other_exec_file path_candidate_dir
     local wrong_install_dir explicit_result
     local install_target_dir result_path command_output dangerous_cli_bin remove_log update_log
-    local readme readme_zh
+    local readme readme_zh ci_workflow dependabot_config automerge_workflow
     
     assert_eq "$(normalize_arch arm64)" "aarch64" "arm64 normalizes to aarch64"
     assert_eq "$(normalize_arch amd64)" "x86_64" "amd64 normalizes to x86_64"
@@ -358,6 +358,9 @@ EOF
 
     readme="$(cat "${SCRIPT_DIR}/../README.md")"
     readme_zh="$(cat "${SCRIPT_DIR}/../README.zh.md")"
+    ci_workflow="$(cat "${SCRIPT_DIR}/../.github/workflows/ci.yml")"
+    dependabot_config="$(cat "${SCRIPT_DIR}/../.github/dependabot.yml")"
+    automerge_workflow="$(cat "${SCRIPT_DIR}/../.github/workflows/dependabot-auto-merge.yml")"
 
     assert_contains "$readme" "\`xixu-me/codex-manager\` provides \`manage.sh\`" "README.md uses the new repository name and entrypoint wording"
     assert_contains "$readme_zh" "\`xixu-me/codex-manager\` 提供 \`manage.sh\`" "README.zh.md uses the new repository name and entrypoint wording"
@@ -399,6 +402,27 @@ EOF
         printf 'Assertion failed: README files should not use the old repository name\n' >&2
         exit 1
     fi
+
+    assert_contains "$ci_workflow" "shellcheck -x manage.sh lib/*.sh tests/*.sh" "CI runs ShellCheck against the current script layout"
+    assert_contains "$ci_workflow" "bash -n manage.sh lib/*.sh tests/*.sh" "CI runs syntax checks against the current script layout"
+    if [[ "$ci_workflow" == *"install.sh"* || "$ci_workflow" == *"scripts/"* ]]; then
+        printf 'Assertion failed: CI workflow should not reference removed scripts\n' >&2
+        exit 1
+    fi
+
+    assert_contains "$dependabot_config" 'package-ecosystem: "github-actions"' "Dependabot updates GitHub Actions dependencies"
+    assert_contains "$dependabot_config" 'directory: "/"' "Dependabot scans the repository root for workflows"
+    assert_contains "$dependabot_config" 'interval: "weekly"' "Dependabot runs on a weekly schedule"
+
+    assert_contains "$automerge_workflow" "pullRequest.user.login !== 'dependabot[bot]'" "Auto-merge workflow only targets Dependabot PRs"
+    assert_contains "$automerge_workflow" "workflow_run:" "Auto-merge workflow listens to CI workflow completions"
+    assert_contains "$automerge_workflow" 'workflows: ["CI"]' "Auto-merge workflow follows the CI workflow"
+    assert_contains "$automerge_workflow" "github.event.workflow_run.conclusion == 'success'" "Auto-merge workflow waits for a successful CI run"
+    assert_contains "$automerge_workflow" "contents: write" "Auto-merge workflow requests contents write permission"
+    assert_contains "$automerge_workflow" "pull-requests: write" "Auto-merge workflow requests pull request write permission"
+    assert_contains "$automerge_workflow" "actions/github-script@v7" "Auto-merge workflow uses GitHub's script action to merge through the API"
+    assert_contains "$automerge_workflow" "merge_method: 'squash'" "Auto-merge workflow uses squash merging"
+    assert_contains "$automerge_workflow" "sha: context.payload.workflow_run.head_sha" "Auto-merge workflow only merges the tested commit"
     
     printf 'Smoke tests passed.\n'
 }

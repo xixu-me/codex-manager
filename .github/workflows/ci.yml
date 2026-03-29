@@ -30,10 +30,10 @@ jobs:
         run: brew install shellcheck
 
       - name: Run ShellCheck
-        run: shellcheck -x install.sh lib/*.sh scripts/*.sh tests/*.sh
+        run: shellcheck -x manage.sh lib/*.sh tests/*.sh
 
       - name: Run syntax checks
-        run: bash -n install.sh lib/*.sh scripts/*.sh tests/*.sh
+        run: bash -n manage.sh lib/*.sh tests/*.sh
 
       - name: Run smoke tests
         run: bash tests/smoke.sh
