@@ -454,18 +454,35 @@ install_binary_to_dir() {
 
 resolve_codex_binary() {
     local install_dir="${1:-}"
-    
-    if [ -n "$install_dir" ] && [ -x "${install_dir}/codex" ]; then
+
+    if [ -n "$install_dir" ]; then
+        [ -x "${install_dir}/codex" ] || return 1
         printf '%s/codex\n' "$install_dir"
         return 0
     fi
-    
+
     if command_exists codex; then
         command -v codex
         return 0
     fi
-    
+
     return 1
+}
+
+install_target_dir_for_existing_binary() {
+    local install_dir="${1:-}"
+    local codex_path
+
+    codex_path="$(resolve_codex_binary "$install_dir")" || return 1
+    dirname "$codex_path"
+}
+
+remove_codex_install() {
+    local install_dir="${1:-}"
+    local codex_path
+
+    codex_path="$(resolve_codex_binary "$install_dir")" || return 1
+    remove_file "$codex_path"
 }
 
 codex_supports_device_auth() {
