@@ -63,6 +63,7 @@ curl -fsSL https://github.com/xixu-me/codex-manager/raw/refs/heads/main/manage.s
 ```bash
 git clone https://github.com/xixu-me/codex-manager.git
 cd codex-manager
+chmod +x manage.sh
 ```
 
 然后使用主入口：

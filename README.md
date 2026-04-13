@@ -63,6 +63,7 @@ Clone the repository if you want to run the manager locally:
 ```bash
 git clone https://github.com/xixu-me/codex-manager.git
 cd codex-manager
+chmod +x manage.sh
 ```
 
 Then use the main entrypoint:
